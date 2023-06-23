@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:chat_app/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -82,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
           height: mq.height * 0.06,
           child: ElevatedButton.icon(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 83, 159, 178),
+              backgroundColor: const Color.fromARGB(255, 83, 159, 178),
               shape: const StadiumBorder(),
               elevation: 1,
             ),
