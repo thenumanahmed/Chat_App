@@ -1,8 +1,4 @@
-import 'package:chat_app/screens/home_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
-import '../../main.dart';
+import 'package:chat_app/headers.dart'; 
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -27,9 +23,14 @@ class _SplashScreenState extends State<SplashScreen> {
 
       //navigate to home screen
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+          context, MaterialPageRoute(builder: (_) => const Padding(
+            padding:  EdgeInsets.all(8.0),
+            child:  LoginScreen(),
+          )));
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {

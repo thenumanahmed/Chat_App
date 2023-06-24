@@ -1,9 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/services.dart';
-import 'firebase_options.dart';
-
-import 'screens/splash_screen.dart';
+import 'headers.dart';
 
 // global object for accessing device screen size
 late Size mq;
@@ -23,6 +18,8 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
+  // ho gya
 
   @override
   Widget build(BuildContext context) {
