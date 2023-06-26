@@ -23,10 +23,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
       //navigate to home screen
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) => const Padding(
-            padding:  EdgeInsets.all(8.0),
-            child:  LoginScreen(),
-          )));
+          context, MaterialPageRoute(builder: (_) =>const LoginScreen(),
+          ));
     });
   }
 
