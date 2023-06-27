@@ -1,11 +1,6 @@
 import 'dart:developer';
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-
-import '../home_screen.dart';
-import '../../main.dart';
+import 'package:chat_app/headers.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -39,7 +34,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<UserCredential> _signInWithGoogle() async {
-    // Trigger the authentication flow
+    // Trigger the authentication flow(shows pop up)
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
     // Obtain the auth details from the request
