@@ -9,7 +9,7 @@ void main() {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
   //setting the orientation to potrait only
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp])
+  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp,DeviceOrientation.portraitDown])
       .then((value) {
     _initializeFirebase();
     runApp(const MyApp());
@@ -18,8 +18,6 @@ void main() {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
-
-  // ho gya
 
   @override
   Widget build(BuildContext context) {
