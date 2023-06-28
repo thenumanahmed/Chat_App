@@ -28,7 +28,16 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 10),
         child: FloatingActionButton(
-          onPressed: () {},
+          onPressed: () async {
+            await APIs.auth.signOut();
+            await GoogleSignIn().signOut();
+            // ignore: use_build_context_synchronously
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const LoginScreen(),
+            ));
+          },
           child: const Icon(Icons.add_comment_rounded),
         ),
       ),

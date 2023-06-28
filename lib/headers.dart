@@ -9,3 +9,5 @@ export 'screens/splash_screen.dart';
 export 'screens/home_screen.dart';
 export 'screens/auth/login_screen.dart';
 export 'main.dart';
+export 'helper/dialogs.dart';
+export 'api/apis.dart';

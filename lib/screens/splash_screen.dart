@@ -1,4 +1,6 @@
-import 'package:chat_app/headers.dart'; 
+import 'dart:developer';
+
+import 'package:chat_app/headers.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,14 +23,24 @@ class _SplashScreenState extends State<SplashScreen> {
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
       );
 
-      //navigate to home screen
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (_) =>const LoginScreen(),
-          ));
+      if (APIs.auth.currentUser != null) {
+         log('\n Usser ${APIs.auth.currentUser}'); 
+        //navigate to home screen
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const HomeScreen(),
+            ));
+      } else {
+        //navigate to login screen
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const LoginScreen(),
+            ));
+      }
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
