@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/headers.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -22,9 +23,21 @@ class _ChatUserCardState extends State<ChatUserCard> {
         onTap: () {},
         child: ListTile(
           //profile pic
-          leading: const CircleAvatar(
-            child: Icon(CupertinoIcons.person),
+          leading: ClipRRect(
+            borderRadius: BorderRadius.circular(mq.height * 0.3),
+            child: CachedNetworkImage(
+              height: mq.height * 0.06,
+              width: mq.height * 0.06,
+              imageUrl: widget.user.image,
+              // placeholder: (context, url) => const Icon(Icons.error),
+              errorWidget: (context, url, error) => const CircleAvatar(
+                child: Icon(CupertinoIcons.person),
+              ),
+            ),
           ),
+          // leading: const CircleAvatar(
+          //   child: Icon(CupertinoIcons.person),
+          // ),
 
           //user name
           title: Text(widget.user.name),
@@ -33,9 +46,13 @@ class _ChatUserCardState extends State<ChatUserCard> {
           subtitle: Text(widget.user.about, maxLines: 1),
 
           //message time
-          trailing: const Text(
-            '12:05 pm',
-            style: TextStyle(color: Colors.black54),
+          trailing: Container(
+            height: 12,
+            width: 12,
+            decoration: BoxDecoration(
+              color: Colors.greenAccent.shade400,
+              borderRadius: BorderRadius.circular(10)
+            ),
           ),
         ),
       ),

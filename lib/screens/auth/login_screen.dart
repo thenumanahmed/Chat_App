@@ -16,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
   void initState() {
     super.initState();
     Future.delayed(
-        const Duration(
+        const Duration( 
           milliseconds: 500,
         ), () {
       setState(() {
@@ -27,13 +27,19 @@ class _LoginScreenState extends State<LoginScreen> {
 
   _handleGoogleBtnClick() {
     Dialogs.showProgressBar(context);
-    _signInWithGoogle().then((user) {
+    _signInWithGoogle().then((user) async {
       Navigator.pop(context);
       if (user != null) {
         log('\n User ${user.user}');
         log('\n User additional info  ${user.additionalUserInfo}');
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+
+        if (await APIs.userExists()) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+        } else {
+          await APIs.createUser().then((value) => Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (_) => const HomeScreen())));
+        }
       }
     });
   }
