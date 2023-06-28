@@ -1,6 +1,9 @@
-import 'package:chat_app/headers.dart';
-import 'package:chat_app/widgets/chat_user_card.dart';
 import 'package:flutter/cupertino.dart';
+
+import 'package:chat_app/widgets/chat_user_card.dart';
+import 'package:chat_app/headers.dart';
+
+import '../models/chat_user.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<ChatUser> list = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,13 +46,43 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Icon(Icons.add_comment_rounded),
           ),
         ),
-        body: ListView.builder(
-          itemCount:60 ,
-          //for little spacing at start of the screen
-          padding: EdgeInsets.only(top: mq.height *0.005),
-          physics: const BouncingScrollPhysics(),
-          itemBuilder: (context, index) {
-            return const ChatUserCard();
+        body: StreamBuilder(
+          stream: APIs.firestore.collection('users').snapshots(),
+          builder: (context, snapshot) {
+            switch (snapshot.connectionState) {
+              // if data is loading
+              case ConnectionState.none:
+              case ConnectionState.waiting:
+                return const Center(child: CircularProgressIndicator());
+
+              // if some or all data is loaded then show this
+              case ConnectionState.active:
+              case ConnectionState.done:
+                final data = snapshot.data?.docs;
+                list = data?.map((e) => ChatUser.fromJson(e.data())).toList() ??
+                    [];
+
+                if (list.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount: list.length,
+                    //for little spacing at start of the screen
+                    padding: EdgeInsets.only(top: mq.height * 0.005),
+                    physics: const BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return ChatUserCard(
+                        user: list[index],
+                      );
+                    },
+                  );
+                } else {
+                  return const Center(
+                    child:  Text(
+                      'No Connections found',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  );
+                }
+            }
           },
         ));
   }
