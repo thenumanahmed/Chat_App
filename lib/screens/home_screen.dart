@@ -1,3 +1,4 @@
+import 'package:chat_app/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:chat_app/widgets/chat_user_card.dart';
@@ -26,7 +27,15 @@ class _HomeScreenState extends State<HomeScreen> {
             IconButton(onPressed: () {}, icon: const Icon(Icons.search)),
 
             //more features button
-            IconButton(onPressed: () {}, icon: const Icon(Icons.more_vert))
+            IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ProfileScreen(user: list[0]),
+                      ));
+                },
+                icon: const Icon(Icons.more_vert))
           ],
         ),
         //floating button to add new user
@@ -43,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     builder: (_) => const LoginScreen(),
                   ));
             },
-            child: const Icon(Icons.add_comment_rounded),
+            child: const Icon(Icons.logout_rounded),
           ),
         ),
         body: StreamBuilder(
@@ -76,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   );
                 } else {
                   return const Center(
-                    child:  Text(
+                    child: Text(
                       'No Connections found',
                       style: TextStyle(fontSize: 20),
                     ),

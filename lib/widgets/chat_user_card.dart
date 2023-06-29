@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:chat_app/headers.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -50,9 +49,8 @@ class _ChatUserCardState extends State<ChatUserCard> {
             height: 12,
             width: 12,
             decoration: BoxDecoration(
-              color: Colors.greenAccent.shade400,
-              borderRadius: BorderRadius.circular(10)
-            ),
+                color: Colors.greenAccent.shade400,
+                borderRadius: BorderRadius.circular(10)),
           ),
         ),
       ),

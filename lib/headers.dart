@@ -3,6 +3,7 @@ export 'package:firebase_core/firebase_core.dart';
 export 'package:flutter/services.dart';
 export 'firebase_options.dart';
 export 'package:firebase_auth/firebase_auth.dart'; 
+export 'package:cached_network_image/cached_network_image.dart';
 export 'package:google_sign_in/google_sign_in.dart';
 
 export 'screens/splash_screen.dart';
