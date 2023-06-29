@@ -27,14 +27,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
             backgroundColor: Colors.blue,
             label: const Text("Log Out"),
             onPressed: () async {
-              await APIs.auth.signOut();
-              await GoogleSignIn().signOut();
-              // ignore: use_build_context_synchronously
-              Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LoginScreen(),
-                  ));
+              //show the loading progress indicator
+              Dialogs.showProgressBar(context);
+
+              //signing out the user
+              await APIs.auth.signOut().then((value) async {
+                await GoogleSignIn().signOut().then((value) {
+                  //removing the progress indicator
+                  Navigator.pop(context);
+
+                  //movinfg to home screen
+                  Navigator.pop(context);
+
+                  //replacing the current screen with login screen
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const LoginScreen(),
+                      ));
+                });
+              });
             },
           ),
         ),
@@ -43,18 +55,36 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             children: [
               SizedBox(width: mq.width, height: mq.height * .03),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(mq.height * 0.1),
-                child: CachedNetworkImage(
-                  height: mq.height * 0.2,
-                  width: mq.height * 0.2,
-                  fit: BoxFit.fill,
-                  imageUrl: widget.user.image,
-                  // placeholder: (context, url) => const Icon(Icons.error),
-                  errorWidget: (context, url, error) => const CircleAvatar(
-                    child: Icon(CupertinoIcons.person),
+              Stack(
+                children: [
+                  //profile picture
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * 0.1),
+                    child: CachedNetworkImage(
+                      height: mq.height * 0.2,
+                      width: mq.height * 0.2,
+                      fit: BoxFit.fill,
+                      imageUrl: widget.user.image,
+                      // placeholder: (context, url) => const Icon(Icons.error),
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                        child: Icon(CupertinoIcons.person),
+                      ),
+                    ),
                   ),
-                ),
+
+                  //edit image button
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: MaterialButton(
+                      onPressed: () {},
+                      elevation: 1,
+                      shape: const CircleBorder(),
+                      color: Colors.white,
+                      child: const Icon(Icons.edit, color: Colors.blue),
+                    ),
+                  )
+                ],
               ),
               SizedBox(height: mq.height * .03),
               Text(widget.user.email,
