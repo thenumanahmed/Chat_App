@@ -39,12 +39,16 @@ dependencies:
   firebase_core: ^2.13.1
   # for handling google sign in
   google_sign_in: ^6.1.2
-  #for firebase authentication
+  # for firebase authentication
   firebase_auth: ^4.6.2
   # for accessing data from firestore
   cloud_firestore: ^4.8.3
   # for network image
   cached_network_image: ^3.2.3
+  # for picking images
+  image_picker: ^1.0.1
+  #for accessing firebase storage
+  firebase_storage: ^11.2.5
   
 dev_dependencies:
   flutter_test:

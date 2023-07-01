@@ -1,6 +1,8 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../headers.dart';
 import '../models/chat_user.dart';
@@ -15,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
+  String? _image = null;
 
   @override
   Widget build(BuildContext context) {
@@ -69,27 +72,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Stack(
                       children: [
                         //profile picture
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(mq.height * 0.1),
-                          child: CachedNetworkImage(
-                            height: mq.height * 0.2,
-                            width: mq.height * 0.2,
-                            fit: BoxFit.fill,
-                            imageUrl: widget.user.image,
-                            // placeholder: (context, url) => const Icon(Icons.error),
-                            errorWidget: (context, url, error) =>
-                                const CircleAvatar(
-                              child: Icon(CupertinoIcons.person),
-                            ),
-                          ),
-                        ),
+                        _image != null
+                            ?
+
+                            //local image
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(mq.height * 0.1),
+                                child: Image.file(
+                                  File(_image!),
+                                  height: mq.height * 0.2,
+                                  width: mq.height * 0.2,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            :
+
+                            //image from server
+                            ClipRRect(
+                                borderRadius:
+                                    BorderRadius.circular(mq.height * 0.1),
+                                child: CachedNetworkImage(
+                                  height: mq.height * 0.2,
+                                  width: mq.height * 0.2,
+                                  fit: BoxFit.cover,
+                                  imageUrl: widget.user.image,
+                                  // placeholder: (context, url) => const Icon(Icons.error),
+                                  errorWidget: (context, url, error) =>
+                                      const CircleAvatar(
+                                    child: Icon(CupertinoIcons.person),
+                                  ),
+                                ),
+                              ),
 
                         //edit image button
                         Positioned(
                           bottom: 0,
                           right: 0,
                           child: MaterialButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              _showBottomSheet();
+                            },
                             elevation: 1,
                             shape: const CircleBorder(),
                             color: Colors.white,
@@ -170,5 +193,96 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           )),
     );
+  }
+
+  void _showBottomSheet() {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        )),
+        builder: (_) {
+          return ListView(
+            shrinkWrap: true,
+            padding:
+                EdgeInsets.only(top: mq.height * .02, bottom: mq.height * .05),
+            children: [
+              const Text(
+                'Pick Profile Picture',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: mq.height * .01),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  //gallery icon
+                  ElevatedButton(
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      //Pick an image
+                      final XFile? image =
+                          await picker.pickImage(source: ImageSource.gallery);
+
+                      //updating the image
+                      if (image != null) {
+                        print('\ndebug: pthname ${image.path} ');
+
+                        //hiding the bottom sheet
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+
+                        //update the image
+                        setState(() {
+                          _image = image.path;
+                        });
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: const CircleBorder(),
+                      fixedSize: Size(mq.width * 0.3, mq.height * 0.15),
+                    ),
+                    child: Image.asset('images/add_image.png'),
+                  ),
+
+                  //Camera icon
+                  ElevatedButton(
+                    onPressed: () async {
+                      final ImagePicker picker = ImagePicker();
+
+                      //Pick an image
+                      final XFile? image =
+                          await picker.pickImage(source: ImageSource.camera);
+
+                      //updating the image
+                      if (image != null) {
+                        print('\ndebug: pthname ${image.path} '); 
+
+                        //hiding the bottom sheet
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
+
+                        //update the image
+                        setState(() {
+                          _image = image.path;
+                        });
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: const CircleBorder(),
+                      fixedSize: Size(mq.width * 0.3, mq.height * 0.15),
+                    ),
+                    child: Image.asset('images/camera.png'),
+                  ),
+                ],
+              )
+            ],
+          );
+        });
   }
 }
