@@ -224,21 +224,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       final ImagePicker picker = ImagePicker();
 
                       //Pick an image
-                      final XFile? image =
-                          await picker.pickImage(source: ImageSource.gallery);
+                      final XFile? image = await picker.pickImage(
+                        source: ImageSource.gallery,
+                        // reduce the quality of image to save server space
+                        imageQuality: 80,
+                      );
 
                       //updating the image
                       if (image != null) {
-                        print('\ndebug: pthname ${image.path} ');
-
-                        //hiding the bottom sheet
-                        // ignore: use_build_context_synchronously
-                        Navigator.pop(context);
-
                         //update the image
                         setState(() {
                           _image = image.path;
                         });
+
+                        print('\ndebug: pthname ${image.path} ');
+                        //update the profile picture
+                        APIs.updateProfilePicture(File(_image!));
+
+                        //hiding the bottom sheet
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -260,16 +265,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                       //updating the image
                       if (image != null) {
-                        print('\ndebug: pthname ${image.path} '); 
-
-                        //hiding the bottom sheet
-                        // ignore: use_build_context_synchronously
-                        Navigator.pop(context);
-
                         //update the image
                         setState(() {
                           _image = image.path;
                         });
+
+                        print('\ndebug: pthname ${image.path} ');
+
+                        //update the profile picture
+                        APIs.updateProfilePicture(File(_image!));
+
+                        //hiding the bottom sheet
+                        // ignore: use_build_context_synchronously
+                        Navigator.pop(context);
                       }
                     },
                     style: ElevatedButton.styleFrom(
