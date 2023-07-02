@@ -1,6 +1,11 @@
+import 'dart:convert';
+
 import 'package:chat_app/headers.dart';
 import 'package:chat_app/models/chat_user.dart';
+import 'package:chat_app/widgets/message_card.dart';
 import 'package:flutter/cupertino.dart';
+
+import '../models/message.dart';
 
 class ChatScreen extends StatefulWidget {
   final ChatUser user;
@@ -12,6 +17,9 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  //for storing all the messages
+  List<Message> _list = [];
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -22,9 +30,64 @@ class _ChatScreenState extends State<ChatScreen> {
           flexibleSpace: _appBar(),
         ),
 
+        backgroundColor: Colors.white.withOpacity(.8),
+
         //body(messages)
         body: Column(
           children: [
+            Expanded(
+              child: StreamBuilder(
+                stream: APIs.getAllMessages(),
+                builder: (context, snapshot) {
+                  switch (snapshot.connectionState) {
+                    // if data is loading
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return const Center(child: CircularProgressIndicator());
+
+                    // if some or all data is loaded then show this
+                    case ConnectionState.active:
+                    case ConnectionState.done:
+                      final data = snapshot.data?.docs;
+                      print('Data: ${jsonEncode(data![0].data())}');
+                      _list.clear();
+                      _list.add(Message(
+                          toId: 'xyz',
+                          msg: 'hii',
+                          read: '',
+                          type: 'text',
+                          sent: '12:00 AM',
+                          fromId: APIs.user.uid));
+                      _list.add(Message(
+                          toId: APIs.user.uid,
+                          msg: 'Hello',
+                          read: '',
+                          type: 'text',
+                          sent: '12:00 AM',
+                          fromId: 'xyz'));
+
+                      if (_list.isNotEmpty) {
+                        return ListView.builder(
+                          itemCount: _list.length,
+                          //for little spacing at start of the screen
+                          padding: EdgeInsets.only(top: mq.height * 0.005),
+                          physics: const BouncingScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return MessageCard(message: _list[index]);
+                          },
+                        );
+                      } else {
+                        return Center(
+                          child: Text(
+                            'Say Hi to ${widget.user.name}👋! ',
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                        );
+                      }
+                  }
+                },
+              ),
+            ),
             __chatInput(),
           ],
         ),
@@ -55,8 +118,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   const Expanded(
                       child: TextField(
-                        keyboardType: TextInputType.multiline,
-                        maxLines: null,
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     decoration: InputDecoration(
                       hintText: 'Type Something....',
                       hintStyle: TextStyle(color: Colors.blueGrey),
@@ -71,10 +134,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   //camera button
                   IconButton(
-                    onPressed: () {},
-                    icon: const Icon(Icons.camera_alt_rounded,
-                        color: Colors.blueAccent)
-                  ),
+                      onPressed: () {},
+                      icon: const Icon(Icons.camera_alt_rounded,
+                          color: Colors.blueAccent)),
                   const SizedBox(width: 2),
                 ],
               ),

@@ -93,4 +93,12 @@ class APIs {
       {'image': me.image},
     );
   }
+
+  // ####### CHAT SCREEN RELATED API ########
+  //getting all messages of a specific conversation from firestore database 
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
+    return firestore
+        .collection('messages') 
+        .snapshots();
+  }
 }
