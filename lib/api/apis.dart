@@ -84,7 +84,7 @@ class APIs {
     //upload the file
     await ref.putFile(file, SettableMetadata(contentType: 'image/$ext')).then(
       (p0) {
-        print('${p0.bytesTransferred / 1000}kb');
+        // print('${p0.bytesTransferred / 1000}kb');
       },
     );
     me.image = await ref.getDownloadURL();

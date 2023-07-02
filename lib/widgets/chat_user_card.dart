@@ -1,4 +1,5 @@
 import 'package:chat_app/headers.dart';
+import 'package:chat_app/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../models/chat_user.dart';
@@ -19,7 +20,14 @@ class _ChatUserCardState extends State<ChatUserCard> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       elevation: 0.5,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          //navigate to the chat screen
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => ChatScreen(user: widget.user),
+              ));
+        },
         child: ListTile(
           //profile pic
           leading: ClipRRect(

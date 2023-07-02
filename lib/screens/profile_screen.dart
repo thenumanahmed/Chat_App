@@ -17,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  String? _image = null;
+  String? _image ;
 
   @override
   Widget build(BuildContext context) {
@@ -236,8 +236,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         setState(() {
                           _image = image.path;
                         });
+                        // print('\ndebug: pthname ${image.path} ');
 
-                        print('\ndebug: pthname ${image.path} ');
                         //update the profile picture
                         APIs.updateProfilePicture(File(_image!));
 
@@ -269,8 +269,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         setState(() {
                           _image = image.path;
                         });
+                        // print('\ndebug: pthname ${image.path} ');
 
-                        print('\ndebug: pthname ${image.path} ');
 
                         //update the profile picture
                         APIs.updateProfilePicture(File(_image!));
