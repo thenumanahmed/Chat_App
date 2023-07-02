@@ -16,10 +16,80 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        //app bar
         appBar: AppBar(
           automaticallyImplyLeading: false,
           flexibleSpace: _appBar(),
         ),
+
+        //body(messages)
+        body: Column(
+          children: [
+            __chatInput(),
+          ],
+        ),
+
+        // input
+      ),
+    );
+  }
+
+  Widget __chatInput() {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+          horizontal: mq.width * .02, vertical: mq.height * .01),
+      child: Row(
+        children: [
+          //input field and buttons
+          Expanded(
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15)),
+              child: Row(
+                children: [
+                  //emoji button
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.emoji_emotions,
+                          color: Colors.blueAccent)),
+
+                  const Expanded(
+                      child: TextField(
+                        keyboardType: TextInputType.multiline,
+                        maxLines: null,
+                    decoration: InputDecoration(
+                      hintText: 'Type Something....',
+                      hintStyle: TextStyle(color: Colors.blueGrey),
+                      border: InputBorder.none,
+                    ),
+                  )),
+
+                  //gallery button
+                  IconButton(
+                      onPressed: () {},
+                      icon: const Icon(Icons.image, color: Colors.blueAccent)),
+
+                  //camera button
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.camera_alt_rounded,
+                        color: Colors.blueAccent)
+                  ),
+                  const SizedBox(width: 2),
+                ],
+              ),
+            ),
+          ),
+          MaterialButton(
+            minWidth: 0,
+            padding:
+                const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
+            onPressed: () {},
+            shape: const CircleBorder(),
+            color: Colors.green,
+            child: const Icon(Icons.send, color: Colors.white, size: 28),
+          )
+        ],
       ),
     );
   }
@@ -28,15 +98,12 @@ class _ChatScreenState extends State<ChatScreen> {
     return InkWell(
       child: Row(
         children: [
-          //back button
+          //back button to remove chat screen
           IconButton(
-            onPressed: () {
-              //remove the chat screen
-              Navigator.pop(context);
-            },
+            onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back, color: Colors.black54),
           ),
-    
+
           //user profile pic
           ClipRRect(
             borderRadius: BorderRadius.circular(mq.height * 0.3),
@@ -51,7 +118,7 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           const SizedBox(width: 10),
-    
+
           //user name & last seen time
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
