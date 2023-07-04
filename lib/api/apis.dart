@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app/models/chat_user.dart';
+import 'package:chat_app/models/message.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -95,10 +96,45 @@ class APIs {
   }
 
   // ####### CHAT SCREEN RELATED API ########
-  //getting all messages of a specific conversation from firestore database 
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages() {
+
+  // useful for getting conversation id
+  static String getConversationId(String id) => user.uid.hashCode <= id.hashCode
+      ? '${user.uid}_$id'
+      : '${id}_${user.uid}';
+
+  //getting all messages of a specific conversation from firestore database
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(
+      ChatUser user) {
     return firestore
-        .collection('messages') 
+        .collection('chats/${getConversationId(user.id)}/messages/')
         .snapshots();
+  }
+
+  //for sending message
+  static Future<void> sendMessage(ChatUser chatUser, String message) async {
+    //message sending time (also used as id)
+    final time = DateTime.now().microsecondsSinceEpoch.toString();
+
+    //message to send
+    final Message msg = Message(
+        toId: chatUser.id,
+        msg: message,
+        read: '',
+        type: 'text',
+        sent: time,
+        fromId: user.uid);
+
+    final ref = firestore
+        .collection('chats/${getConversationId(chatUser.id)}/messages/');
+
+    await ref.doc(time).set(msg.toJson());
+  }
+
+  //update message read status
+  static Future<void> updateMessageReadStatus(Message message) async {
+    firestore
+        .collection('chats/${getConversationId(message.fromId)}/messages/')
+        .doc(message.sent)
+        .update({'read': DateTime.now().microsecondsSinceEpoch.toString()});
   }
 }

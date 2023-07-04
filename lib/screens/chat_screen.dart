@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:chat_app/headers.dart';
 import 'package:chat_app/models/chat_user.dart';
 import 'package:chat_app/widgets/message_card.dart';
@@ -18,7 +16,11 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   //for storing all the messages
+  // ignore: prefer_final_fields
   List<Message> _list = [];
+
+  // frohandling text field
+  final _textController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,34 +39,23 @@ class _ChatScreenState extends State<ChatScreen> {
           children: [
             Expanded(
               child: StreamBuilder(
-                stream: APIs.getAllMessages(),
+                stream: APIs.getAllMessages(widget.user),
                 builder: (context, snapshot) {
                   switch (snapshot.connectionState) {
                     // if data is loading
                     case ConnectionState.none:
                     case ConnectionState.waiting:
-                      return const Center(child: CircularProgressIndicator());
+                      return const Center(child: SizedBox());
 
                     // if some or all data is loaded then show this
                     case ConnectionState.active:
                     case ConnectionState.done:
                       final data = snapshot.data?.docs;
-                      print('Data: ${jsonEncode(data![0].data())}');
-                      _list.clear();
-                      _list.add(Message(
-                          toId: 'xyz',
-                          msg: 'hii',
-                          read: '',
-                          type: 'text',
-                          sent: '12:00 AM',
-                          fromId: APIs.user.uid));
-                      _list.add(Message(
-                          toId: APIs.user.uid,
-                          msg: 'Hello',
-                          read: '',
-                          type: 'text',
-                          sent: '12:00 AM',
-                          fromId: 'xyz'));
+
+                      _list = data
+                              ?.map((e) => Message.fromJson(e.data()))
+                              .toList() ??
+                          [];
 
                       if (_list.isNotEmpty) {
                         return ListView.builder(
@@ -91,8 +82,6 @@ class _ChatScreenState extends State<ChatScreen> {
             __chatInput(),
           ],
         ),
-
-        // input
       ),
     );
   }
@@ -116,11 +105,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       icon: const Icon(Icons.emoji_emotions,
                           color: Colors.blueAccent)),
 
-                  const Expanded(
+                  Expanded(
                       child: TextField(
+                    controller: _textController,
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: 'Type Something....',
                       hintStyle: TextStyle(color: Colors.blueGrey),
                       border: InputBorder.none,
@@ -146,7 +136,14 @@ class _ChatScreenState extends State<ChatScreen> {
             minWidth: 0,
             padding:
                 const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
-            onPressed: () {},
+            onPressed: () {
+              if (_textController.text.isNotEmpty) {
+                APIs.sendMessage(widget.user, _textController.text);
+
+                //clear the message field
+                _textController.text = '';
+              }
+            },
             shape: const CircleBorder(),
             color: Colors.green,
             child: const Icon(Icons.send, color: Colors.white, size: 28),
