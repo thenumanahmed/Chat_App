@@ -4,7 +4,6 @@ import 'headers.dart';
 late Size mq;
 
 void main() {
-  
   WidgetsFlutterBinding.ensureInitialized();
   //enter full-screen mode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);

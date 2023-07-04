@@ -1,8 +1,11 @@
-import 'package:chat_app/headers.dart';
-import 'package:chat_app/models/chat_user.dart';
-import 'package:chat_app/widgets/message_card.dart';
+import 'dart:io';
+
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../models/chat_user.dart';
+import '../headers.dart';
+import '../widgets/message_card.dart';
 import '../models/message.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -22,65 +25,104 @@ class _ChatScreenState extends State<ChatScreen> {
   // frohandling text field
   final _textController = TextEditingController();
 
+  //show and hiding emoji
+  bool _showEmoji = false;
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        //app bar
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          flexibleSpace: _appBar(),
-        ),
-
-        backgroundColor: Colors.white.withOpacity(.8),
-
-        //body(messages)
-        body: Column(
-          children: [
-            Expanded(
-              child: StreamBuilder(
-                stream: APIs.getAllMessages(widget.user),
-                builder: (context, snapshot) {
-                  switch (snapshot.connectionState) {
-                    // if data is loading
-                    case ConnectionState.none:
-                    case ConnectionState.waiting:
-                      return const Center(child: SizedBox());
-
-                    // if some or all data is loaded then show this
-                    case ConnectionState.active:
-                    case ConnectionState.done:
-                      final data = snapshot.data?.docs;
-
-                      _list = data
-                              ?.map((e) => Message.fromJson(e.data()))
-                              .toList() ??
-                          [];
-
-                      if (_list.isNotEmpty) {
-                        return ListView.builder(
-                          itemCount: _list.length,
-                          //for little spacing at start of the screen
-                          padding: EdgeInsets.only(top: mq.height * 0.005),
-                          physics: const BouncingScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            return MessageCard(message: _list[index]);
-                          },
-                        );
-                      } else {
-                        return Center(
-                          child: Text(
-                            'Say Hi to ${widget.user.name}👋! ',
-                            style: const TextStyle(fontSize: 20),
-                          ),
-                        );
-                      }
-                  }
-                },
-              ),
+    return GestureDetector(
+      // to hide the keyboard
+      onTap: () => FocusScope.of(context).unfocus(),
+      child: SafeArea(
+        child: WillPopScope(
+          // if emojis are shown & back buton is pressed then close search
+          // or else simple close current screen on back button click
+          onWillPop: () {
+            if (_showEmoji) {
+              _showEmoji = !_showEmoji;
+              setState(() {});
+              return Future.value(false);
+            } else {
+              // to pop the screen
+              return Future.value(true);
+            }
+          },
+          child: Scaffold(
+            //app bar
+            appBar: AppBar(
+              automaticallyImplyLeading: false,
+              flexibleSpace: _appBar(),
             ),
-            __chatInput(),
-          ],
+
+            backgroundColor: Colors.white.withOpacity(.8),
+
+            //body(messages)
+            body: Column(
+              children: [
+                Expanded(
+                  child: StreamBuilder(
+                    stream: APIs.getAllMessages(widget.user),
+                    builder: (context, snapshot) {
+                      switch (snapshot.connectionState) {
+                        // if data is loading
+                        case ConnectionState.none:
+                        case ConnectionState.waiting:
+                          return const Center(child: SizedBox());
+
+                        // if some or all data is loaded then show this
+                        case ConnectionState.active:
+                        case ConnectionState.done:
+                          final data = snapshot.data?.docs;
+
+                          _list = data
+                                  ?.map((e) => Message.fromJson(e.data()))
+                                  .toList() ??
+                              [];
+
+                          if (_list.isNotEmpty) {
+                            return ListView.builder(
+                              itemCount: _list.length,
+                              //for little spacing at start of the screen
+                              padding: EdgeInsets.only(top: mq.height * 0.005),
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return MessageCard(message: _list[index]);
+                              },
+                            );
+                          } else {
+                            return Center(
+                              child: Text(
+                                'Say Hi to ${widget.user.name}👋! ',
+                                style: const TextStyle(fontSize: 20),
+                              ),
+                            );
+                          }
+                      }
+                    },
+                  ),
+                ),
+                __chatInput(),
+                if (_showEmoji)
+                  SizedBox(
+                    height: mq.height * .35,
+                    child: EmojiPicker(
+                      textEditingController:
+                          _textController, // pass here the same [TextEditingController] that is connected to your input field, usually a [TextFormField]\
+
+                      config: Config(
+                        bgColor: Colors.white.withOpacity(.8),
+                        columns: 8,
+                        // initCategory: Category.SMILEYS,
+                        emojiSizeMax: 32 *
+                            (Platform.isIOS
+                                ? 1.30
+                                : 1.0), // Issue: https://github.com/flutter/flutter/issues/28894
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -101,13 +143,22 @@ class _ChatScreenState extends State<ChatScreen> {
                 children: [
                   //emoji button
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        FocusScope.of(context)
+                            .unfocus(); //hide the normal keyboard if open
+
+                        setState(() => _showEmoji = !_showEmoji);
+                      },
                       icon: const Icon(Icons.emoji_emotions,
                           color: Colors.blueAccent)),
 
                   Expanded(
                       child: TextField(
                     controller: _textController,
+                    onTap: () {
+                      // to hide emoji keyboard if normal keyboard is opened
+                      setState(() => _showEmoji = false);
+                    },
                     keyboardType: TextInputType.multiline,
                     maxLines: null,
                     decoration: const InputDecoration(
