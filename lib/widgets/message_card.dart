@@ -20,9 +20,8 @@ class _MessageCardState extends State<MessageCard> {
 
   // other message
   Widget _blueMessage() {
-
     // update last read message if sender and reciever are diff
-    if(widget.message.read.isEmpty){
+    if (widget.message.read.isEmpty) {
       APIs.updateMessageReadStatus(widget.message);
     }
 
@@ -36,7 +35,9 @@ class _MessageCardState extends State<MessageCard> {
             child: Container(
               margin: EdgeInsets.symmetric(
                   horizontal: mq.height * 0.04, vertical: mq.height * 0.01),
-              padding: EdgeInsets.all(mq.width * 0.04),
+              padding: EdgeInsets.all(widget.message.type == 'text'
+                  ? mq.width * 0.04
+                  : mq.width * 0.025),
               decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 201, 232, 255),
                   border: Border.all(color: Colors.lightBlue),
@@ -46,10 +47,25 @@ class _MessageCardState extends State<MessageCard> {
                     topRight: Radius.circular(10),
                     bottomRight: Radius.circular(10),
                   )),
-              child: Text(
-                widget.message.msg,
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
-              ),
+              child: widget.message.type == 'text'
+                  ? Text(
+                      widget.message.msg,
+                      style:
+                          const TextStyle(fontSize: 15, color: Colors.black87),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.message.msg, // msg has image url
+                        // placeholder: (context, url) => const Icon(Icons.error),
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.image, size: 70),
+                      ),
+                    ),
             ),
           ),
           //time
@@ -103,9 +119,11 @@ class _MessageCardState extends State<MessageCard> {
           //message content
           Flexible(
             child: Container(
+              padding: EdgeInsets.all(widget.message.type == 'text'
+                  ? mq.width * 0.04
+                  : mq.width * 0.025),
               margin: EdgeInsets.symmetric(
                   horizontal: mq.height * 0.04, vertical: mq.height * 0.01),
-              padding: EdgeInsets.all(mq.width * 0.04),
               decoration: BoxDecoration(
                   color: const Color.fromARGB(255, 223, 249, 216),
                   border: Border.all(color: Colors.lightGreen),
@@ -115,10 +133,25 @@ class _MessageCardState extends State<MessageCard> {
                     topRight: Radius.circular(10),
                     bottomLeft: Radius.circular(10),
                   )),
-              child: Text(
-                widget.message.msg,
-                style: const TextStyle(fontSize: 15, color: Colors.black87),
-              ),
+              child: widget.message.type == 'text'
+                  ? Text(
+                      widget.message.msg,
+                      style:
+                          const TextStyle(fontSize: 15, color: Colors.black87),
+                    )
+                  : ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: CachedNetworkImage(
+                        imageUrl: widget.message.msg, // msg has image url
+                        // placeholder: (context, url) => const Icon(Icons.error),
+                        placeholder: (context, url) =>
+                            const CircularProgressIndicator(
+                          strokeWidth: 2,
+                        ),
+                        errorWidget: (context, url, error) =>
+                            const Icon(Icons.image, size: 70),
+                      ),
+                    ),
             ),
           ),
         ],
