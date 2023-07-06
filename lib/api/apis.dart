@@ -107,6 +107,7 @@ class APIs {
       ChatUser user) {
     return firestore
         .collection('chats/${getConversationId(user.id)}/messages/')
+        .orderBy('sent', descending: true)
         .snapshots();
   }
 
@@ -152,13 +153,14 @@ class APIs {
   // get chat image
   static Future<void> sendChatImage(ChatUser chatUser, File file) async {
     final ext = file.path.split('.').last;
-
+    print('debug: uploading ');
+    print(file);
     final ref = storage.ref().child(
         'images/${getConversationId(chatUser.id)}/${DateTime.now().microsecondsSinceEpoch}.$ext');
     //upload the file
     await ref.putFile(file, SettableMetadata(contentType: 'image/$ext')).then(
       (p0) {
-        // print('${p0.bytesTransferred / 1000}kb');
+        print('${p0.bytesTransferred / 1000}kb');
       },
     );
     final imageUrl = await ref.getDownloadURL();

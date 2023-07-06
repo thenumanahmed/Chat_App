@@ -27,7 +27,9 @@ class _ChatScreenState extends State<ChatScreen> {
   final _textController = TextEditingController();
 
   //show and hiding emoji
-  bool _showEmoji = false;
+  bool _showEmoji = false,
+      // for checking if image is uploading or not
+      _isUploading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
                           if (_list.isNotEmpty) {
                             return ListView.builder(
+                              reverse: true,
                               itemCount: _list.length,
                               //for little spacing at start of the screen
                               padding: EdgeInsets.only(top: mq.height * 0.005),
@@ -102,6 +105,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     },
                   ),
                 ),
+                if (_isUploading) const CircularProgressIndicator(),
                 __chatInput(),
                 if (_showEmoji)
                   SizedBox(
@@ -171,7 +175,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
                   //gallery button
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        final ImagePicker picker = ImagePicker();
+                        //Pick an image
+                        final List<XFile> images =
+                            await picker.pickMultiImage(imageQuality: 70);
+
+                        // uploading and sending image one by one
+                        for (var image in images) {
+                          setState(() => _isUploading = true);
+                          await APIs.sendChatImage(
+                              widget.user, File(image.path));
+                          setState(() => _isUploading = false);
+                        }
+                      },
                       icon: const Icon(Icons.image, color: Colors.blueAccent)),
 
                   //camera button
@@ -185,8 +202,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         if (image != null) {
                           // print('\ndebug: pthname ${image.path} ');
 
-                          //update the profile picture
-                          await APIs.sendChatImage(widget.user, File(image.path));
+                          //send image
+                          await APIs.sendChatImage(
+                              widget.user, File(image.path));
                         }
                       },
                       icon: const Icon(Icons.camera_alt_rounded,
