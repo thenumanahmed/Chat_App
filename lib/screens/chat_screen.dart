@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:chat_app/helper/my_date_util.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
@@ -237,56 +238,69 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _appBar() {
     return InkWell(
-      child: Row(
-        children: [
-          //back button to remove chat screen
-          IconButton(
-            onPressed: () => Navigator.pop(context),
-            icon: const Icon(Icons.arrow_back, color: Colors.black54),
-          ),
+        child: StreamBuilder(
+            stream: APIs.getUserInfo(widget.user),
+            builder: (context, snapshot) {
+              final data = snapshot.data?.docs;
+              final list =
+                  data?.map((e) => ChatUser.fromJson(e.data())).toList() ?? [];
+              return Row(
+                children: [
+                  //back button to remove chat screen
+                  IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.arrow_back, color: Colors.black54),
+                  ),
 
-          //user profile pic
-          ClipRRect(
-            borderRadius: BorderRadius.circular(mq.height * 0.3),
-            child: CachedNetworkImage(
-              height: mq.height * 0.06,
-              width: mq.height * 0.06,
-              imageUrl: widget.user.image,
-              // placeholder: (context, url) => const Icon(Icons.error),
-              errorWidget: (context, url, error) => const CircleAvatar(
-                child: Icon(CupertinoIcons.person),
-              ),
-            ),
-          ),
-          const SizedBox(width: 10),
+                  //user profile pic
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * 0.3),
+                    child: CachedNetworkImage(
+                      height: mq.height * 0.06,
+                      width: mq.height * 0.06,
+                      imageUrl:
+                          list.isNotEmpty ? list[0].image : widget.user.image,
+                      // placeholder: (context, url) => const Icon(Icons.error),
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                        child: Icon(CupertinoIcons.person),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
 
-          //user name & last seen time
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              //user name
-              Text(
-                widget.user.name,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
-              const SizedBox(height: 2),
-              //last seen time
-              Text(
-                widget.user.name,
-                style: const TextStyle(
-                  fontSize: 13,
-                  color: Colors.black54,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+                  //user name & last seen time
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //user name
+                      Text(
+                        list.isNotEmpty ? list[0].name : widget.user.name,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      //last seen time
+                      Text(
+                        list.isNotEmpty
+                            ? list[0].isOnline
+                                ? 'Online'
+                                : MyDateUtil.getLastActiveTime(
+                                    context: context, lastActive: list[0].lastActive)
+                            : MyDateUtil.getLastActiveTime(
+                                    context: context, lastActive: widget.user.lastActive),
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              );
+            }));
   }
 }

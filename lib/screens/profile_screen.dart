@@ -17,7 +17,7 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  String? _image ;
+  String? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +40,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               onPressed: () async {
                 //show the loading progress indicator
                 Dialogs.showProgressBar(context);
+                // set user status to offline
+                await APIs.updateActiveStatus(false);
 
                 //signing out the user
                 await APIs.auth.signOut().then((value) async {
@@ -49,6 +51,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
                     //movinfg to home screen
                     Navigator.pop(context);
+
+                    APIs.auth = FirebaseAuth.instance;
 
                     //replacing the current screen with login screen
                     Navigator.pushReplacement(
@@ -270,7 +274,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           _image = image.path;
                         });
                         // print('\ndebug: pthname ${image.path} ');
-
 
                         //update the profile picture
                         APIs.updateProfilePicture(File(_image!));

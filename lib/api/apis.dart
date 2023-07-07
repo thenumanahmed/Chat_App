@@ -166,4 +166,19 @@ class APIs {
     final imageUrl = await ref.getDownloadURL();
     await sendMessage(chatUser, imageUrl, 'image');
   }
+
+  //getting info of specific user
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getUserInfo(
+      ChatUser chatUser) {
+    return firestore
+        .collection('users')
+        .where('id', isNotEqualTo: user.uid)
+        .snapshots();
+  }
+
+  // update online or last active status of user
+  static Future<void> updateActiveStatus(bool isOnline) async {
+     firestore
+        .collection('users').doc(user.uid).update({'is_online':isOnline,'last_active':DateTime.now().microsecondsSinceEpoch.toString()});
+  }
 }
