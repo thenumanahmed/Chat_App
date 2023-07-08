@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chat_app/helper/my_date_util.dart';
+import 'package:chat_app/screens/view_profile_screen.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
@@ -238,6 +239,12 @@ class _ChatScreenState extends State<ChatScreen> {
 
   Widget _appBar() {
     return InkWell(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (_) => ViewProfileScreen(user: widget.user)));
+        },
         child: StreamBuilder(
             stream: APIs.getUserInfo(widget.user),
             builder: (context, snapshot) {
@@ -289,9 +296,11 @@ class _ChatScreenState extends State<ChatScreen> {
                             ? list[0].isOnline
                                 ? 'Online'
                                 : MyDateUtil.getLastActiveTime(
-                                    context: context, lastActive: list[0].lastActive)
+                                    context: context,
+                                    lastActive: list[0].lastActive)
                             : MyDateUtil.getLastActiveTime(
-                                    context: context, lastActive: widget.user.lastActive),
+                                context: context,
+                                lastActive: widget.user.lastActive),
                         style: const TextStyle(
                           fontSize: 13,
                           color: Colors.black54,
