@@ -1,9 +1,5 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:chat_app/helper/my_date_util.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../headers.dart';
 import '../models/chat_user.dart';
@@ -31,20 +27,24 @@ class _ViewProfileScreenState extends State<ViewProfileScreen> {
           ),
           floatingActionButton: //user about
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                           const Text('Joined on: ',
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('Joined on: ',
                     style: TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.w500,
                         fontSize: 16)),
-                Text(MyDateUtil.getLastMessageTime(context: context, time: widget.user.createdAt ,showYear: true),
+                Text(
+                    MyDateUtil.getLastMessageTime(
+                        context: context,
+                        time: widget.user.createdAt,
+                        showYear: true),
                     style: const TextStyle(color: Colors.black54)),
-                          ],
-                        ),
-              ),
+              ],
+            ),
+          ),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: mq.width * .05),
             child: SingleChildScrollView(

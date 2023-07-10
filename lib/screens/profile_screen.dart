@@ -92,7 +92,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               )
                             :
 
-                            //image from server
+                            //profile pic from server
                             ClipRRect(
                                 borderRadius:
                                     BorderRadius.circular(mq.height * 0.1),

@@ -1,6 +1,7 @@
 import 'package:chat_app/headers.dart';
 import 'package:chat_app/helper/my_date_util.dart';
 import 'package:chat_app/screens/chat_screen.dart';
+import 'package:chat_app/widgets/dialogs/profile_dialog.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../models/chat_user.dart';
@@ -41,15 +42,21 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
               return ListTile(
                 //profile pic
-                leading: ClipRRect(
-                  borderRadius: BorderRadius.circular(mq.height * 0.3),
-                  child: CachedNetworkImage(
-                    height: mq.height * 0.06,
-                    width: mq.height * 0.06,
-                    imageUrl: widget.user.image,
-                    // placeholder: (context, url) => const Icon(Icons.error),
-                    errorWidget: (context, url, error) => const CircleAvatar(
-                      child: Icon(CupertinoIcons.person),
+                leading: InkWell(
+                  onTap: () {
+                    showDialog(
+                        context: context, builder: (_) => ProfileDialog(user: widget.user));
+                  },
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(mq.height * 0.3),
+                    child: CachedNetworkImage(
+                      height: mq.height * 0.06,
+                      width: mq.height * 0.06,
+                      imageUrl: widget.user.image,
+                      // placeholder: (context, url) => const Icon(Icons.error),
+                      errorWidget: (context, url, error) => const CircleAvatar(
+                        child: Icon(CupertinoIcons.person),
+                      ),
                     ),
                   ),
                 ),
@@ -59,10 +66,11 @@ class _ChatUserCardState extends State<ChatUserCard> {
 
                 //user last message
                 subtitle: Text(
-                   
-                    _message != null ?
-                    _message!.type == 'image'?'image':
-                     _message!.msg : widget.user.about,
+                    _message != null
+                        ? _message!.type == 'image'
+                            ? 'image'
+                            : _message!.msg
+                        : widget.user.about,
                     maxLines: 1),
 
                 //message time
@@ -81,7 +89,7 @@ class _ChatUserCardState extends State<ChatUserCard> {
                         //message  sent time (when message is read)
                         : Text(
                             MyDateUtil.getLastMessageTime(
-                                 context: context, time: _message!.sent),
+                                context: context, time: _message!.sent),
                             style: const TextStyle(color: Colors.black54),
                           ),
               );
