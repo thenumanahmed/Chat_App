@@ -1,4 +1,5 @@
 import 'package:chat_app/helper/my_date_util.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 
 import '../headers.dart';
 import '../models/message.dart';
@@ -74,11 +75,11 @@ class _MessageCardState extends State<MessageCard> {
           //time
           Row(
             children: [
-              //double tick blue icon for message read
-              const Icon(Icons.done_all_outlined, color: Colors.blue, size: 18),
+              // //double tick blue icon for message read
+              // const Icon(Icons.done_all_outlined, color: Colors.blue, size: 18),
 
               // for adding some space
-              const SizedBox(width: 2),
+              // const SizedBox(width: 2),
 
               //send time
               Text(
@@ -195,7 +196,15 @@ class _MessageCardState extends State<MessageCard> {
                         size: 26,
                       ),
                       name: 'Copy Text',
-                      onTap: () {})
+                      onTap: () {
+                        Clipboard.setData(
+                                ClipboardData(text: widget.message.msg))
+                            .then((value) {
+                          //hide the bottom sheet
+                          Navigator.pop(context);
+                          Dialogs.showSnackbar(context, 'Text Copied!');
+                        });
+                      })
                   :
                   //save image
                   _OptionItem(
@@ -205,7 +214,21 @@ class _MessageCardState extends State<MessageCard> {
                         size: 26,
                       ),
                       name: 'Save Image',
-                      onTap: () {}),
+                      onTap: () async {
+                        try {
+                          await GallerySaver.saveImage(widget.message.msg,albumName: 'Chat App')
+                              .then((success) {
+                            //hide the bottom sheet
+                            Navigator.pop(context);
+                            if (success != null && success) {
+                              Dialogs.showSnackbar(
+                                  context, 'Image Saved Successfully! ');
+                            }
+                          });
+                        } catch (e) {
+                          print("error while saving image $e ");
+                        }
+                      }),
 
               //divider
               if (isMe)
@@ -235,7 +258,13 @@ class _MessageCardState extends State<MessageCard> {
                       size: 26,
                     ),
                     name: 'Delete Message',
-                    onTap: () {}),
+                    onTap: () async {
+                      await APIs.deleteMessage(widget.message).then((v) {
+                        print('delete');
+                        //hiding the bottom sheet
+                        Navigator.pop(context);
+                      });
+                    }),
 
               //divider
               Divider(
@@ -250,7 +279,8 @@ class _MessageCardState extends State<MessageCard> {
                     Icons.remove_red_eye,
                     color: Colors.blue,
                   ),
-                  name: 'Sent at: ',
+                  name:
+                      'Sent at: ${MyDateUtil.getMessageTime(context: context, time: widget.message.sent)}',
                   onTap: () {}),
 
               //read time
@@ -259,7 +289,9 @@ class _MessageCardState extends State<MessageCard> {
                     Icons.remove_red_eye,
                     color: Colors.red,
                   ),
-                  name: 'Read at: ',
+                  name: widget.message.read.isNotEmpty
+                      ? 'Read at: ${MyDateUtil.getMessageTime(context: context, time: widget.message.read)}'
+                      : 'Read at: Not seen yet',
                   onTap: () {}),
             ],
           );

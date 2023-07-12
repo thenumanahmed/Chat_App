@@ -54,9 +54,11 @@ dependencies:
   # for accessing firebase messaging (push notification)
   firebase_messaging: ^14.6.5
   # for rest apis
-  http: ^1.1.0
+  http: ^0.13.1
   # for creating notification channel
   flutter_notification_channel: ^2.0.0
+  # for storing images into gallery
+  gallery_saver: ^2.3.2
   
 dev_dependencies:
   flutter_test:
