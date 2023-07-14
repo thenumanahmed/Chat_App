@@ -252,4 +252,12 @@ class APIs {
     //if message is image delete it from firebase storage too
     if (message.type == 'image') storage.refFromURL(message.msg).delete();
   }
+
+  // update message
+  static Future<void> updateMessage(Message message, String updatedMsg) async {
+    firestore
+        .collection('chats/${getConversationId(message.toId)}/messages/')
+        .doc(message.sent)
+        .update({'msg': updatedMsg});
+  }
 }

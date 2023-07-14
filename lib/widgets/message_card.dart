@@ -216,7 +216,8 @@ class _MessageCardState extends State<MessageCard> {
                       name: 'Save Image',
                       onTap: () async {
                         try {
-                          await GallerySaver.saveImage(widget.message.msg,albumName: 'Chat App')
+                          await GallerySaver.saveImage(widget.message.msg,
+                                  albumName: 'Chat App')
                               .then((success) {
                             //hide the bottom sheet
                             Navigator.pop(context);
@@ -247,7 +248,12 @@ class _MessageCardState extends State<MessageCard> {
                       size: 26,
                     ),
                     name: 'Edit Message',
-                    onTap: () {}),
+                    onTap: () {
+                      //hide the bottom sheet
+                      Navigator.pop(context);
+
+                      _showMessageUpdateDialog();
+                    }),
 
               //delete message
               if (isMe)
@@ -296,6 +302,63 @@ class _MessageCardState extends State<MessageCard> {
             ],
           );
         });
+  }
+
+  void _showMessageUpdateDialog() {
+    String updatedMsg = widget.message.msg;
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              contentPadding: const EdgeInsets.only(
+                  left: 24, right: 24, top: 20, bottom: 10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              //title
+              title: const Row(
+                children: [
+                  Icon(Icons.message, color: Colors.blue, size: 25),
+                  SizedBox(width: 2),
+                  Text(
+                    'Update Message',
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
+
+              // content
+              content: TextFormField(
+                initialValue: updatedMsg,
+                maxLines: null,
+                onChanged: (value) => updatedMsg = value,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15))),
+              ),
+
+              //actions
+              actions: [
+                //cancel button
+                MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    )),
+                //update button
+                MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      APIs.updateMessage(widget.message, updatedMsg);
+                    },
+                    child: const Text(
+                      'Update',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ))
+              ],
+            ));
   }
 }
 
