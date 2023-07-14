@@ -35,7 +35,7 @@ class APIs {
     await fMessaging.getToken().then((t) {
       if (t != null) {
         me.pushToken = t;
-        print('push token: $t');
+        // print('push token: $t');
       }
     });
 
@@ -98,6 +98,27 @@ class APIs {
             .doc(auth.currentUser!.uid)
             .get())
         .exists;
+  }
+
+  // for adding a chat user for our conversation
+  static Future<bool> addChatUser(String email) async {
+    final data = await firestore
+        .collection('users')
+        .where('email', isEqualTo: email)
+        .get();
+
+    if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
+      //user exists
+      firestore
+          .collection('user')
+          .doc(user.uid)
+          .collection('my_users')
+          .doc(data.docs.first.id).set({});
+      return true;
+    } else {
+      //user does not exists
+      return false;
+    }
   }
 
   // for creating a new user

@@ -26,7 +26,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     APIs.getSelfInfo();
-   
 
     // for updating user status according to lifecycle events
     SystemChannels.lifecycle.setMessageHandler((message) {
@@ -123,17 +122,10 @@ class _HomeScreenState extends State<HomeScreen> {
             floatingActionButton: Padding(
               padding: const EdgeInsets.only(bottom: 10),
               child: FloatingActionButton(
-                onPressed: () async {
-                  await APIs.auth.signOut();
-                  await GoogleSignIn().signOut();
-                  // ignore: use_build_context_synchronously
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const LoginScreen(),
-                      ));
+                onPressed: () {
+                  _showAddChatUserDialog();
                 },
-                child: const Icon(Icons.logout_rounded),
+                child: const Icon(Icons.person_add_alt_1),
               ),
             ),
             body: StreamBuilder(
@@ -182,5 +174,73 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
       ),
     );
+  }
+
+  void _showAddChatUserDialog() {
+    String email = "";
+
+    showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+              contentPadding: const EdgeInsets.only(
+                  left: 24, right: 24, top: 20, bottom: 10),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              //title
+              title: const Row(
+                children: [
+                  Icon(Icons.person_add, color: Colors.blue, size: 25),
+                  SizedBox(width: 4),
+                  Text(
+                    ' Add User',
+                    style: TextStyle(fontSize: 18),
+                  )
+                ],
+              ),
+
+              // content
+              content: TextFormField(
+                maxLines: null,
+                onChanged: (value) => email = value,
+                decoration: InputDecoration(
+                    hintText: "Email id",
+                    prefix: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: const Icon(Icons.email, color: Colors.blue,size: 24,),
+                    ),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15))),
+              ),
+
+              //actions
+              actions: [
+                //cancel button
+                MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    )),
+                //add button
+                MaterialButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      if (email.isNotEmpty) {
+                        APIs.addChatUser(email).then((value) {
+                          if (!value) {
+                            Dialogs.showSnackbar(
+                                context, 'User doesn\'t exists.');
+                          }
+                        });
+                      }
+                    },
+                    child: const Text(
+                      'Add',
+                      style: TextStyle(color: Colors.blue, fontSize: 16),
+                    ))
+              ],
+            ));
   }
 }
