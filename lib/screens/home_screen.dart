@@ -1,7 +1,6 @@
 import 'package:chat_app/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:chat_app/widgets/chat_user_card.dart';
 import 'package:chat_app/headers.dart';
 
 import '../models/chat_user.dart';
@@ -131,37 +130,36 @@ class _HomeScreenState extends State<HomeScreen> {
             body: StreamBuilder(
               stream: APIs.getMyUsersId(),
               builder: (context, snapshot) {
-               switch (snapshot.connectionState) {
-                        // if data is loading
-                        case ConnectionState.none:
-                        case ConnectionState.waiting:
-                          return const Center(
-                              child: CircularProgressIndicator());
+                switch (snapshot.connectionState) {
+                  // if data is loading
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return const Center(child: CircularProgressIndicator());
 
-                        // if some or all data is loaded then show this
-                        case ConnectionState.active:
-                        case ConnectionState.done:
-                  return StreamBuilder(
-                    stream: APIs.getAllUsers(
-                        snapshot.data?.docs.map((e) => e.id).toList() ?? []),
-                    builder: (context, snapshot) {
-                      switch (snapshot.connectionState) {
-                        // if data is loading
-                        case ConnectionState.none:
-                        case ConnectionState.waiting:
-                          return const Center(
-                              child: CircularProgressIndicator());
+                  // if some or all data is loaded then show this
+                  case ConnectionState.active:
+                  case ConnectionState.done:
+                    return StreamBuilder(
+                      stream: APIs.getAllUsers(
+                          snapshot.data?.docs.map((e) => e.id).toList() ?? []),
+                      builder: (context, snapshot) {
+                        switch (snapshot.connectionState) {
+                          // if data is loading
+                          case ConnectionState.none:
+                          case ConnectionState.waiting:
+                            return const Center(
+                                child: CircularProgressIndicator());
 
-                        // if some or all data is loaded then show this
-                        case ConnectionState.active:
-                        case ConnectionState.done:
-                          final data = snapshot.data?.docs;
-                          _list = data
-                                  ?.map((e) => ChatUser.fromJson(e.data()))
-                                  .toList() ??
-                              [];
+                          // if some or all data is loaded then show this
+                          case ConnectionState.active:
+                          case ConnectionState.done:
+                            final data = snapshot.data?.docs;
+                            _list = data
+                                    ?.map((e) => ChatUser.fromJson(e.data()))
+                                    .toList() ??
+                                [];
 
-                          // if (_list.isNotEmpty) {
+                            // if (_list.isNotEmpty) {
                             // return ListView.builder(
                             //   itemCount: _isSearching
                             //       ? _searchList.length
@@ -179,17 +177,17 @@ class _HomeScreenState extends State<HomeScreen> {
                             // );
                             return Container();
                           // } else {
-                            // return const Center(
-                              // child: Text(
+                          // return const Center(
+                          // child: Text(
                           //       'No Connections found',
                           //       style: TextStyle(fontSize: 20),
                           //     ),
                           //   );
                           // }
-                      }
-                    },
-                  );
-                } 
+                        }
+                      },
+                    );
+                }
               },
             )),
       ),
