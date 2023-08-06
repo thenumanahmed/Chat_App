@@ -113,7 +113,8 @@ class APIs {
           .collection('user')
           .doc(user.uid)
           .collection('my_users')
-          .doc(data.docs.first.id).set({});
+          .doc(data.docs.first.id)
+          .set({});
       return true;
     } else {
       //user does not exists
@@ -141,12 +142,34 @@ class APIs {
         .set(chatUser.toJson());
   }
 
-  //getting all user info
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers() {
+  //getting ids of known users
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getMyUsersId() {
     return firestore
         .collection('users')
-        .where('id', isNotEqualTo: user.uid)
+        .doc(user.uid)
+        .collection('my_users')
         .snapshots();
+  }
+
+  //getting all user info
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
+      List<String> userIds) {
+    return firestore
+        .collection('users')
+        // .where('id', isNotEqualTo: user.uid)
+        .where('id', whereIn: userIds)
+        .snapshots();
+  }
+
+  // for adding a user to my user data
+  static Future<void> sendFirstMesage(
+      ChatUser chatUser, String message, String msgType) async {
+    await firestore
+        .collection('users')
+        .doc(chatUser.id)
+        .collection('my_users')
+        .doc(user.uid)
+        .set({}).then((value) => sendMessage(chatUser, message, msgType));
   }
 
   // for checking the user exists or not
