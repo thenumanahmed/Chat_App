@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:chat_app/headers.dart';
 
 import '../models/chat_user.dart';
+import '../widgets/chat_user_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -159,31 +160,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                     .toList() ??
                                 [];
 
-                            // if (_list.isNotEmpty) {
-                            // return ListView.builder(
-                            //   itemCount: _isSearching
-                            //       ? _searchList.length
-                            //       : _list.length,
-                            //   //for little spacing at start of the screen
-                            //   padding: EdgeInsets.only(top: mq.height * 0.005),
-                            //   physics: const BouncingScrollPhysics(),
-                            //   itemBuilder: (context, index) {
-                            //     return ChatUserCard(
-                            //       user: _isSearching
-                            //           ? _searchList[index]
-                            //           : _list[index],
-                            //     );
-                            //   },
-                            // );
-                            return Container();
-                          // } else {
-                          // return const Center(
-                          // child: Text(
-                          //       'No Connections found',
-                          //       style: TextStyle(fontSize: 20),
-                          //     ),
-                          //   );
-                          // }
+                            if (_list.isNotEmpty) {
+                            return ListView.builder(
+                              itemCount: _isSearching
+                                  ? _searchList.length
+                                  : _list.length,
+                              //for little spacing at start of the screen
+                              padding: EdgeInsets.only(top: mq.height * 0.005),
+                              physics: const BouncingScrollPhysics(),
+                              itemBuilder: (context, index) {
+                                return ChatUserCard(
+                                  user: _isSearching
+                                      ? _searchList[index]
+                                      : _list[index],
+                                );
+                              },
+                            );
+                          } else {
+                          return const Center(
+                          child: Text(
+                                'No Connections found',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            );
+                          }
                         }
                       },
                     );
@@ -254,6 +254,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (!value) {
                             Dialogs.showSnackbar(
                                 context, 'User doesn\'t exists.');
+                          }
+                          else{
+                            print('user added');
                           }
                         });
                       }

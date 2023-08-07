@@ -110,7 +110,7 @@ class APIs {
     if (data.docs.isNotEmpty && data.docs.first.id != user.uid) {
       //user exists
       firestore
-          .collection('user')
+          .collection('users')
           .doc(user.uid)
           .collection('my_users')
           .doc(data.docs.first.id)
@@ -154,10 +154,12 @@ class APIs {
   //getting all user info
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
       List<String> userIds) {
+    print('UserIDs: $userIds');
+
     return firestore
         .collection('users')
         // .where('id', isNotEqualTo: user.uid)
-        .where('id', whereIn: userIds)
+        .where('id', whereIn: userIds.isEmpty ? [''] : userIds)
         .snapshots();
   }
 

@@ -222,11 +222,8 @@ class _ChatScreenState extends State<ChatScreen> {
                 const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                if (_list.isEmpty) {
-                  APIs.sendFirstMesage(widget.user, _textController.text, 'text');
-                } else {
-                  APIs.sendMessage(widget.user, _textController.text, 'text');
-                }
+                APIs.sendMessage(widget.user, _textController.text, 'text');
+
                 //clear the message field
                 _textController.text = '';
               }
