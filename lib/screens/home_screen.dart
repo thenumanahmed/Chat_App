@@ -200,8 +200,8 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
         context: context,
         builder: (_) => AlertDialog(
-              contentPadding: const EdgeInsets.only(
-                  left: 24, right: 24, top: 20, bottom: 10),
+              // contentPadding: const EdgeInsets.only(
+              //     left: 24, right: 24, top: 20, bottom: 10),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               //title

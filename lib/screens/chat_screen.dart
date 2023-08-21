@@ -35,6 +35,8 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('user');
+    print(widget.user.email);
     return GestureDetector(
       // to hide the keyboard
       onTap: () => FocusScope.of(context).unfocus(),
@@ -222,7 +224,12 @@ class _ChatScreenState extends State<ChatScreen> {
                 const EdgeInsets.only(top: 10, bottom: 10, right: 5, left: 10),
             onPressed: () {
               if (_textController.text.isNotEmpty) {
-                APIs.sendMessage(widget.user, _textController.text, 'text');
+                if (_list.isEmpty) {
+                  APIs.sendFirstMesage(
+                      widget.user, _textController.text, 'text');
+                } else {
+                  APIs.sendMessage(widget.user, _textController.text, 'text');
+                }
 
                 //clear the message field
                 _textController.text = '';
@@ -238,6 +245,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _appBar() {
+    print('appbar');
+    print(widget.user.email);
     return InkWell(
         onTap: () {
           Navigator.push(

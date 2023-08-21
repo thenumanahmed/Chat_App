@@ -275,7 +275,7 @@ class APIs {
       ChatUser chatUser) {
     return firestore
         .collection('users')
-        .where('id', isNotEqualTo: chatUser.id)
+        .where('id', isEqualTo: chatUser.id)
         .snapshots();
   }
 
