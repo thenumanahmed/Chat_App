@@ -49,11 +49,11 @@ class APIs {
     });
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
+      // print('Got a message whilst in the foreground!');
+      // print('Message data: ${message.data}');
 
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
+        // print('Message also contained a notification: ${message.notification}');
       }
     });
   }
@@ -71,18 +71,18 @@ class APIs {
           'data': {'some_data': 'user id ${me.id}'}
         }
       };
-      var response =
-          await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
-              headers: {
-                HttpHeaders.contentTypeHeader: 'application/json',
-                HttpHeaders.authorizationHeader:
-                    "key=AAAAy6dxJIw:APA91bHdo8dTffTvDCMpYyz7EKcuZ2iDN-n5aPl7MzBDtbi4F8Mie9KLdciAH68jjtdJixXQAhGBGzy8S4L6MGiPrD2fl8MJzwO09pWeCtmKtFHSpDARrawpiXVl1TG3bKhWWCc042At"
-              },
-              body: jsonEncode(body));
-      print('Response status: ${response.statusCode}');
-      print('Response body  : ${response.body}');
+      // var response =
+      await post(Uri.parse('https://fcm.googleapis.com/fcm/send'),
+          headers: {
+            HttpHeaders.contentTypeHeader: 'application/json',
+            HttpHeaders.authorizationHeader:
+                "key=AAAAy6dxJIw:APA91bHdo8dTffTvDCMpYyz7EKcuZ2iDN-n5aPl7MzBDtbi4F8Mie9KLdciAH68jjtdJixXQAhGBGzy8S4L6MGiPrD2fl8MJzwO09pWeCtmKtFHSpDARrawpiXVl1TG3bKhWWCc042At"
+          },
+          body: jsonEncode(body));
+      // print('Response status: ${response.statusCode}');
+      // print('Response body  : ${response.body}');
     } catch (e) {
-      print('\nsend push notification error : $e');
+      // print('\nsend push notification error : $e');
     }
   }
 
@@ -163,7 +163,7 @@ class APIs {
   //getting all user info
   static Stream<QuerySnapshot<Map<String, dynamic>>> getAllUsers(
       List<String> userIds) {
-    print('UserIDs: $userIds');
+    // print('UserIDs: $userIds');
 
     return firestore
         .collection('users')
@@ -228,7 +228,7 @@ class APIs {
   static Future<void> sendMessage(
       ChatUser chatUser, String message, String msgType) async {
     //message sending time (also used as id)
-    final time = DateTime.now().microsecondsSinceEpoch.toString();
+    final time = DateTime.now().millisecondsSinceEpoch.toString();
 
     //message to send
     final Message msg = Message(
@@ -251,7 +251,7 @@ class APIs {
     firestore
         .collection('chats/${getConversationId(message.fromId)}/messages/')
         .doc(message.sent)
-        .update({'read': DateTime.now().microsecondsSinceEpoch.toString()});
+        .update({'read': DateTime.now().millisecondsSinceEpoch.toString()});
   }
 
   // get only last message of a specific chat
@@ -268,7 +268,7 @@ class APIs {
   static Future<void> sendChatImage(ChatUser chatUser, File file) async {
     final ext = file.path.split('.').last;
     final ref = storage.ref().child(
-        'images/${getConversationId(chatUser.id)}/${DateTime.now().microsecondsSinceEpoch}.$ext');
+        'images/${getConversationId(chatUser.id)}/${DateTime.now().millisecondsSinceEpoch}.$ext');
     //upload the file
     await ref.putFile(file, SettableMetadata(contentType: 'image/$ext')).then(
       (p0) {
@@ -292,7 +292,7 @@ class APIs {
   static Future<void> updateActiveStatus(bool isOnline) async {
     firestore.collection('users').doc(user.uid).update({
       'is_online': isOnline,
-      'last_active': DateTime.now().microsecondsSinceEpoch.toString(),
+      'last_active': DateTime.now().millisecondsSinceEpoch.toString(),
       'push_token': me.pushToken
     });
   }

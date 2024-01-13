@@ -4,6 +4,8 @@ import 'package:gallery_saver/gallery_saver.dart';
 import '../headers.dart';
 import '../models/message.dart';
 
+import 'dart:developer';
+
 class MessageCard extends StatefulWidget {
   const MessageCard({super.key, required this.message});
   final Message message;
@@ -227,7 +229,7 @@ class _MessageCardState extends State<MessageCard> {
                             }
                           });
                         } catch (e) {
-                          print("error while saving image $e ");
+                          log("error while saving image $e ");
                         }
                       }),
 
@@ -266,7 +268,7 @@ class _MessageCardState extends State<MessageCard> {
                     name: 'Delete Message',
                     onTap: () async {
                       await APIs.deleteMessage(widget.message).then((v) {
-                        print('delete');
+                        // print('delete');
                         //hiding the bottom sheet
                         Navigator.pop(context);
                       });

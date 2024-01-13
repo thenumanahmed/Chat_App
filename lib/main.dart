@@ -18,13 +18,14 @@ void main() {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
-    var result = await FlutterNotificationChannel.registerNotificationChannel(
+    // var result = 
+    await FlutterNotificationChannel.registerNotificationChannel(
       description: 'For showing message notification',
       id: 'chats',
       importance: NotificationImportance.IMPORTANCE_HIGH,
       name: 'Chat App',
     );
-    print('notification channel res: $result');
+    // print('notification channel res: $result');
 
     runApp(const MyApp());
   });

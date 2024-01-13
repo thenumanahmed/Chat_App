@@ -1,8 +1,7 @@
-import 'package:chat_app/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 
-import 'package:chat_app/headers.dart';
-
+import '../headers.dart';
+import 'profile_screen.dart';
 import '../models/chat_user.dart';
 import '../widgets/chat_user_card.dart';
 
@@ -168,29 +167,30 @@ class _HomeScreenState extends State<HomeScreen> {
                                 [];
 
                             if (_list.isNotEmpty) {
-                            return ListView.builder(
-                              itemCount: _isSearching
-                                  ? _searchList.length
-                                  : _list.length,
-                              //for little spacing at start of the screen
-                              padding: EdgeInsets.only(top: mq.height * 0.005),
-                              physics: const BouncingScrollPhysics(),
-                              itemBuilder: (context, index) {
-                                return ChatUserCard(
-                                  user: _isSearching
-                                      ? _searchList[index]
-                                      : _list[index],
-                                );
-                              },
-                            );
-                          } else {
-                          return const Center(
-                          child: Text(
-                                'No Connections found',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            );
-                          }
+                              return ListView.builder(
+                                itemCount: _isSearching
+                                    ? _searchList.length
+                                    : _list.length,
+                                //for little spacing at start of the screen
+                                padding:
+                                    EdgeInsets.only(top: mq.height * 0.005),
+                                physics: const BouncingScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  return ChatUserCard(
+                                    user: _isSearching
+                                        ? _searchList[index]
+                                        : _list[index],
+                                  );
+                                },
+                              );
+                            } else {
+                              return const Center(
+                                child: Text(
+                                  'No Connections found',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              );
+                            }
                         }
                       },
                     );
@@ -229,7 +229,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 onChanged: (value) => email = value,
                 decoration: InputDecoration(
                     hintText: "Email id",
-                    prefix: const Padding(
+                    prefixIcon: const Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Icon(
                         Icons.email,
@@ -261,9 +261,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           if (!value) {
                             Dialogs.showSnackbar(
                                 context, 'User doesn\'t exists.');
-                          }
-                          else{
-                            print('user added');
+                          } else {
+                            // print('user added');
                           }
                         });
                       }

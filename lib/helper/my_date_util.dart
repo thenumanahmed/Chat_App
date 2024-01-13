@@ -4,7 +4,7 @@ class MyDateUtil {
   //for getting formated time from epoch string
   static String getFormattedTime(
       {required BuildContext context, required String time}) {
-    final date = DateTime.fromMicrosecondsSinceEpoch(int.parse(time));
+    final date = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
 
     return TimeOfDay.fromDateTime(date).format(context);
   }
@@ -14,11 +14,10 @@ class MyDateUtil {
       {required BuildContext context,
       required String time,
       bool showYear = false}) {
-    final DateTime sent = DateTime.fromMicrosecondsSinceEpoch(int.parse(time));
+    final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
 
     final formattedTime = TimeOfDay.fromDateTime(sent).format(context);
-    
 
     if (now.day == sent.day &&
         now.month == sent.month &&
@@ -36,7 +35,7 @@ class MyDateUtil {
       {required BuildContext context,
       required String time,
       bool showYear = false}) {
-    final DateTime sent = DateTime.fromMicrosecondsSinceEpoch(int.parse(time));
+    final DateTime sent = DateTime.fromMillisecondsSinceEpoch(int.parse(time));
     final DateTime now = DateTime.now();
 
     if (now.day == sent.day &&
@@ -87,7 +86,7 @@ class MyDateUtil {
     // if time not available return below statement
     if (i == -1) return 'Last seen not available';
 
-    DateTime time = DateTime.fromMicrosecondsSinceEpoch(i);
+    DateTime time = DateTime.fromMillisecondsSinceEpoch(i);
     DateTime now = DateTime.now();
 
     String formattedTime = TimeOfDay.fromDateTime(time).format(context);

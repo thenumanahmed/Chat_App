@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:chat_app/helper/my_date_util.dart';
-import 'package:chat_app/screens/view_profile_screen.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../helper/my_date_util.dart';
+import 'view_profile_screen.dart';
 import '../models/chat_user.dart';
 import '../headers.dart';
 import '../widgets/message_card.dart';
@@ -35,8 +35,6 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('user');
-    print(widget.user.email);
     return GestureDetector(
       // to hide the keyboard
       onTap: () => FocusScope.of(context).unfocus(),
@@ -245,8 +243,6 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _appBar() {
-    print('appbar');
-    print(widget.user.email);
     return InkWell(
         onTap: () {
           Navigator.push(
